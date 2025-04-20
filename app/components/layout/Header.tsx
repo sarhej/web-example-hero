@@ -32,13 +32,13 @@ export default function Header() {
               Services
             </Link>
             <Link 
-              href="#about" 
+              href="#features" 
               className="text-gray-700 hover:text-primary-600 font-medium"
             >
               About Us
             </Link>
             <Link 
-              href="#contact" 
+              href="#booking" 
               className="text-gray-700 hover:text-primary-600 font-medium"
             >
               Contact

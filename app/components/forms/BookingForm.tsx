@@ -1,7 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import emailjs from '@emailjs/browser';
+
+// Initialize EmailJS
+emailjs.init('sfxHaob8yfXl17xW_');
 
 interface BookingFormData {
   name: string;
@@ -15,15 +19,62 @@ interface BookingFormData {
 }
 
 export default function BookingForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<BookingFormData>();
 
-  const onSubmit = (data: BookingFormData) => {
-    console.log(data);
-    // Handle form submission
+  const onSubmit = async (data: BookingFormData) => {
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const templateParams = {
+        to_name: "Admin",
+        from_name: data.name,
+        from_email: data.email,
+        phone: data.phone,
+        date: data.date,
+        time: data.time,
+        treatment_type: data.treatmentType,
+        symptoms: data.symptoms,
+        previous_treatment: data.previousTreatment,
+        reply_to: data.email,
+      };
+
+      // Using service ID and template ID from your EmailJS dashboard
+      const response = await emailjs.send(
+        'service_x7z78nl',
+        'template_86o5abf', // Updated template ID
+        templateParams,
+        'sfxHaob8yfXl17xW_'
+      );
+
+      if (response.status === 200) {
+        setSubmitStatus('success');
+        reset();
+      } else {
+        throw new Error(`Failed to send email: ${response.text}`);
+      }
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      let errorMessage = 'There was an error submitting your request. ';
+      
+      if (error?.text) {
+        errorMessage += error.text;
+      } else if (error?.message) {
+        errorMessage += error.message;
+      }
+      
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -33,6 +84,21 @@ export default function BookingForm() {
         <p className="text-center text-gray-600 mb-12">
           Schedule your physiotherapy appointment with our experienced professionals
         </p>
+
+        {submitStatus === 'success' && (
+          <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg">
+            Thank you for your booking request! We will contact you shortly to confirm your appointment.
+          </div>
+        )}
+
+        {submitStatus === 'error' && (
+          <div className="mb-6 p-4 bg-red-50 text-red-700 rounded-lg">
+            {submitStatus === 'error' && (
+              <p>{submitStatus}</p>
+            )}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -43,6 +109,7 @@ export default function BookingForm() {
                 type="text"
                 {...register('name', { required: 'Name is required' })}
                 className="input-field"
+                disabled={isSubmitting}
               />
               {errors.name && (
                 <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -62,6 +129,7 @@ export default function BookingForm() {
                   },
                 })}
                 className="input-field"
+                disabled={isSubmitting}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -75,6 +143,7 @@ export default function BookingForm() {
                 type="tel"
                 {...register('phone', { required: 'Phone number is required' })}
                 className="input-field"
+                disabled={isSubmitting}
               />
               {errors.phone && (
                 <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -87,7 +156,9 @@ export default function BookingForm() {
               <select
                 {...register('treatmentType', { required: 'Treatment type is required' })}
                 className="input-field"
+                disabled={isSubmitting}
               >
+                <option value="">Select treatment type</option>
                 <option value="initial">Initial Consultation</option>
                 <option value="followup">Follow-up Session</option>
                 <option value="sports">Sports Injury</option>
@@ -103,6 +174,7 @@ export default function BookingForm() {
                 type="date"
                 {...register('date', { required: 'Date is required' })}
                 className="input-field"
+                disabled={isSubmitting}
               />
               {errors.date && (
                 <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
@@ -116,10 +188,15 @@ export default function BookingForm() {
                 type="time"
                 {...register('time', { required: 'Time is required' })}
                 className="input-field"
+                step="3600"
+                min="09:00"
+                max="17:00"
+                disabled={isSubmitting}
               />
               {errors.time && (
                 <p className="text-red-500 text-sm mt-1">{errors.time.message}</p>
               )}
+              <p className="text-sm text-gray-500 mt-1">Business hours: 9:00 AM - 5:00 PM</p>
             </div>
           </div>
           <div>
@@ -131,6 +208,7 @@ export default function BookingForm() {
               className="input-field"
               rows={4}
               placeholder="Please describe your symptoms and any specific areas of concern"
+              disabled={isSubmitting}
             />
           </div>
           <div>
@@ -142,14 +220,16 @@ export default function BookingForm() {
               className="input-field"
               rows={3}
               placeholder="Have you had any previous treatments for this condition?"
+              disabled={isSubmitting}
             />
           </div>
           <div className="text-center">
             <button
               type="submit"
               className="btn-primary"
+              disabled={isSubmitting}
             >
-              Book Appointment
+              {isSubmitting ? 'Sending...' : 'Book Appointment'}
             </button>
           </div>
         </form>
