@@ -1,0 +1,102 @@
+{
+  "techStack": {
+    "frontend": {
+      "framework": "Next.js 14",
+      "language": "TypeScript",
+      "styling": "Tailwind CSS",
+      "formHandling": "React Hook Form",
+      "stateManagement": "React Context API"
+    },
+    "backend": {
+      "api": "Next.js API Routes",
+      "database": "Prisma + PostgreSQL",
+      "authentication": "NextAuth.js"
+    },
+    "deployment": "Vercel"
+  },
+  "developmentRules": {
+    "codeStyle": {
+      "indentation": 2,
+      "quotes": "single",
+      "semicolons": true,
+      "maxLineLength": 100
+    },
+    "components": {
+      "naming": "PascalCase",
+      "structure": "functional components",
+      "props": "TypeScript interfaces",
+      "fileLocation": "components directory"
+    },
+    "styling": {
+      "framework": "Tailwind CSS",
+      "customization": "tailwind.config.js",
+      "responsive": "mobile-first approach",
+      "theme": {
+        "primary": "blue-600",
+        "secondary": "gray-600",
+        "background": "white",
+        "text": "gray-900"
+      }
+    },
+    "formHandling": {
+      "library": "React Hook Form",
+      "validation": "built-in validation",
+      "errorHandling": "user-friendly messages",
+      "stateManagement": "controlled components"
+    },
+    "performance": {
+      "images": "next/image",
+      "fonts": "next/font",
+      "codeSplitting": "dynamic imports",
+      "caching": "appropriate headers"
+    },
+    "accessibility": {
+      "ariaLabels": "required",
+      "keyboardNavigation": "required",
+      "colorContrast": "WCAG AA compliant",
+      "semanticHTML": "required"
+    },
+    "seo": {
+      "metadata": "next/head",
+      "sitemap": "required",
+      "robots": "required",
+      "structuredData": "recommended"
+    }
+  },
+  "fileStructure": {
+    "app": {
+      "page.tsx": "main page component",
+      "layout.tsx": "root layout",
+      "api": "API routes"
+    },
+    "components": {
+      "ui": "reusable UI components",
+      "forms": "form components",
+      "layout": "layout components"
+    },
+    "styles": {
+      "globals.css": "global styles",
+      "tailwind.config.js": "Tailwind configuration"
+    },
+    "types": "TypeScript type definitions",
+    "public": {
+      "images": "static images",
+      "fonts": "custom fonts"
+    }
+  },
+  "dependencies": {
+    "required": {
+      "next": "^14.0.0",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "react-hook-form": "^7.0.0",
+      "tailwindcss": "^3.3.0",
+      "typescript": "^5.0.0"
+    },
+    "optional": {
+      "next-auth": "^4.0.0",
+      "prisma": "^5.0.0",
+      "@prisma/client": "^5.0.0"
+    }
+  }
+} 
